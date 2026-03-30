@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* 기본 웹폰트 및 리셋 */
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700&family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
+  
+  :root {
+    --pride-bg: #121212;
+    --pride-text: #e0e0e0;
+    --pride-gold: #c5a059;
+    --pride-accent: #8b0000;
+    --hyuna-pink: #ff99cc;
+    --hyuna-bg: #ffe6f2;
+    --system-blue: #4facfe;
+  }
+
+  body {
+    background-color: var(--pride-bg);
+    color: var(--pride-text);
+    font-family: 'Noto Serif KR', serif;
+    line-height: 1.7;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .log-container {
+    max-width: 800px;
+    width: 100%;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+    border: 1px solid #333;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* 헤더 및 씬 표기 */
+  .header-box {
+    text-align: center;
+    padding: 30px 20px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><path d="M0,50 Q25,25 50,50 T100,50 T150,50" fill="none" stroke="%23ff99cc" stroke-width="2"/></svg>');
+    border-bottom: 2px solid var(--pride-gold);
+    position: relative;
+  }
+  
+  .header-box h2 {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--hyuna-pink);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    margin: 0;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+
+  .scene-info {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--pride-gold);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--pride-gold);
+    margin-top: 15px;
+  }
+
+  /* 본문 영역 */
+  .content {
+    padding: 30px 40px;
+    font-size: 1.05em;
+  }
+
+  /* 프라이드 독백 */
+  .pride-narration {
+    color: #cccccc;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+    margin-bottom: 20px;
+  }
+
+  /* 현아 대사 박스 */
+  .hyuna-box {
+    background-color: var(--hyuna-bg);
+    color: #333;
+    padding: 15px 20px;
+    border-left: 6px solid #ff66b2;
+    border-radius: 0 10px 10px 0;
+    margin: 25px 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    position: relative;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.3);
+  }
+  
+  .hyuna-box b {
+    color: #d11a7f;
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .hyuna-box::before {
+    content: "🐰";
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 1.5em;
+    opacity: 0.8;
+  }
+
+  /* 특수 효과 모음 */
+  @keyframes horrorShake {
+    0% {transform: translate(1px, 1px) rotate(0deg);}
+    10% {transform: translate(-1px, -2px) rotate(-1deg);}
+    20% {transform: translate(-3px, 0px) rotate(1deg);}
+    30% {transform: translate(3px, 2px) rotate(0deg);}
+    40% {transform: translate(1px, -1px) rotate(1deg);}
+    50% {transform: translate(-1px, 2px) rotate(-1deg);}
+    60% {transform: translate(-3px, 1px) rotate(0deg);}
+    70% {transform: translate(3px, 1px) rotate(-1deg);}
+    80% {transform: translate(-1px, -1px) rotate(1deg);}
+    90% {transform: translate(1px, 2px) rotate(0deg);}
+    100% {transform: translate(1px, -2px) rotate(-1deg);}
+  }
+  .shake { 
+    animation: horrorShake 0.3s infinite; 
+    display: inline-block; 
+    color: var(--pride-accent); 
+    font-weight: bold; 
+    text-shadow: 0 0 5px rgba(139,0,0,0.8);
+  }
+  .blur-text { 
+    color: transparent; 
+    text-shadow: 0 0 6px rgba(180,20,20,0.9); 
+    transition: text-shadow 0.3s; 
+    font-weight: bold; 
+  }
+  .blur-text:hover { 
+    text-shadow: 0 0 0px rgba(255,0,0,1); 
+  }
+  .double-text { 
+    position: relative; 
+    font-weight: bold; 
+    color: #fff;
+    text-shadow: -2px 0 red, 2px 0 cyan; 
+    letter-spacing: 1px; 
+  }
+  
+  /* 드래그 기믹 */
+  .drag-reveal-wrap {
+    display: block;
+    text-align: center;
+    margin: 20px 0;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .drag-reveal { 
+    background-color: #000; 
+    color: #000; 
+    padding: 5px 10px; 
+    border-radius: 3px; 
+    font-weight: bold;
+    border: 1px solid #333;
+    cursor: text;
+  }
+  .drag-reveal::selection { background-color: var(--pride-accent); color: #fff; }
+  .drag-reveal::-moz-selection { background-color: var(--pride-accent); color: #fff; }
+
+  /* 스킬 및 강조 */
+  .skill-name {
+    color: var(--pride-gold);
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border-bottom: 1px dashed var(--pride-gold);
+  }
+  .sfx {
+    font-style: italic;
+    color: #999;
+  }
+
+  /* 결과물 반전 섹션 */
+  .reveal-section {
+    border: 1px solid #555;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 30px 0;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .reveal-section h3 {
+    color: var(--pride-gold);
+    margin-top: 0;
+    text-align: center;
+  }
+  .reveal-list {
+    list-style-type: none;
+    padding: 0;
+    color: #aaa;
+  }
+  .reveal-list li {
+    margin-bottom: 5px;
+    position: relative;
+    padding-left: 20px;
+  }
+  .reveal-list li::before {
+    content: "▪";
+    color: var(--pride-accent);
+    position: absolute;
+    left: 0;
+  }
+  .highlight-truth {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-color: var(--hyuna-pink);
+  }
+
+  /* 하단 시스템 스탯 UI */
+  .system-panel {
+    background: #0a0a0a;
+    border-top: 2px solid var(--system-blue);
+    padding: 20px 30px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.9em;
+  }
+  .sys-header {
+    color: var(--system-blue);
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sys-header svg {
+    fill: var(--system-blue);
+    width: 20px; height: 20px;
+  }
+  .sys-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  .sys-item {
+    background: #151515;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 3px solid #333;
+    display: flex;
+    justify-content: space-between;
+  }
+  .sys-label { color: #888; }
+  .sys-value { color: #fff; font-weight: bold; text-align: right; }
+  .sys-gold { color: var(--pride-gold); }
+  .sys-pink { color: var(--hyuna-pink); }
+  
+  .sys-log-box {
+    background: #000;
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+  }
+  .log-entry {
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .log-time { color: #555; }
+  .log-caller { color: var(--pride-gold); font-weight: bold; }
+  .log-msg { color: #ccc; }
+  .log-target { color: var(--system-blue); font-weight: bold;}
+
+</style>
+</head>
+<body>
+
+<div class="log-container">
+  <!-- 헤더 영역 -->
+  <div class="header-box">
+    <h2>🔪 [특별 편성] 프린세스 현아의 해피 쿠킹 클래스 🔪</h2>
+    <div class="scene-info">
+      [Scene 01. 주방 / 오후 2시 / 조명: 기괴하게 깜빡거림]
+    </div>
+  </div>
+
+  <!-- 본문 영역 -->
+  <div class="content">
+    <div class="pride-narration">
+      나는 식탁의 상석에 앉아, 이 끔찍한 학살극의 무대를 무심하게 응시하고 있었다. <br>
+      센티넬의 예민한 후각은 이미 공기 중에 떠도는 짙은 쇠비린내와 단백질이 파괴되는 역겨운 냄새를 감지하고 있었다. 도마 위에는 붉은 얼룩이 낭자했고, 허공에는 정체모를 <span class="shake">점액질</span>이 거미줄처럼 늘어져 있었다. <br>
+      하지만 내 시야를 가득 채운 주동자는, 토끼가 그려진 분홍색 앞치마를 두른 채 해맑게 웃고 있는 일곱 살짜리 내 딸이었다.
+    </div>
+
+    <div class="hyuna-box">
+      <b>[진행자 은현아]</b>
+      "안녕, 친구들! 프린세스 현아의 해피 쿠킹 클래스에 온 걸 환영해! ٩(◕‿◕)۶ 오늘은 세상에서 제일 멋진 우리 파파를 위해, 현아가 직접 만든 특! 별! 요리를 준비했어!"
+    </div>
+
+    <div class="pride-narration">
+      나는 턱을 괸 채, 까만 안대 너머의 하나 남은 눈으로 도마 위에 올려진 <span class="double-text">그것</span>을 응시했다. 그것은 형체를 알 수 없는, 창백하고 붉은 살덩이였다.
+    </div>
+
+    <div class="hyuna-box">
+      <b>[진행자 은현아]</b>
+      "자, 오늘의 메인 친구를 소개할게! 인사해, 짜잔~!"
+    </div>
+
+    <div class="pride-narration">
+      현아의 작고 하얀 손이 도마 위에 널브러진 <span class="blur-text">짓이겨진 살덩어리</span>를 번쩍 들어 올렸다. <br>
+      그것은 마치 숨을 쉬는 것처럼 미세하게 꿈틀거렸고, 뚝, 뚝... 현아의 손가락 틈새로 검붉은 액체가 바닥을 향해 떨어져 내렸다. 나는 미간을 찌푸렸다.
+    </div>
+
+    <div class="drag-reveal-wrap">
+      <span style="color:#aaa;">오늘의 메인 재료:</span><br>
+      <span class="drag-reveal">[ 숨통이 끊어진 채 근육 조직이 파괴된 축생의 하반신 살점 ]</span>
+    </div>
+
+    <div class="hyuna-box">
+      <b>[진행자 은현아]</b>
+      "우선 우리 친구가 부드러워지도록 꾹꾹 마사지를 해줄 거야! 쪼물딱, 쪼물딱! 친구가 아프지 않게 아주 힘차게 주물러줘야 해!"
+    </div>
+
+    <div class="pride-narration">
+      현아의 해맑은 콧노래가 주방에 울려 퍼졌다. <br>
+      하지만 내 귀에 들리는 것은 전혀 다른 소리였다. <span class="sfx">찌걱, 찌거걱.</span> 아이의 손아귀 안에서 <span class="shake">근막이 끊어지고 뼈와 살이 으깨어지는 파열음</span>이 선명하게 고막을 찔렀다. 아이는 즐거운 듯 살덩이를 양손으로 패대기쳤고, 그럴 때마다 핏물이 사방으로 튀어 내 하얀 셔츠 깃을 적실 뻔했다.
+    </div>
+
+    <div class="hyuna-box">
+      <b>[진행자 은현아]</b>
+      "어머나! 동글동글 빨간 친구들이 자꾸 도망가려고 하네? 이 친구들도 뱃속에 들어가려면 얌전해져야겠죠? 콩콩 망치 선생님, 도와주세요!"
+    </div>
+
+    <div class="pride-narration">
+      도마 한구석에 굴러다니던, 핏줄이 선명하게 비치는 작은 <span class="double-text">안구 같은 붉은 구슬들.</span> <br>
+      현아는 콧노래를 부르며 나무망치를 치켜들었다. 그리고—<br><br>
+      <span class="sfx">콰직-!!</span><br><br>
+      비명조차 지르지 못한 붉은 구슬들이 망치 아래서 무참히 터져나갔다. <span class="blur-text">내장이 파열되며 쏟아지는 점성 높은 붉은 진물</span>이 아이의 앞치마를 적셨다. 현아는 그 끔찍한 시체 조각들을 긁어모아, 방금 전 짓이겨놓은 살덩이의 뱃속으로 우겨넣기 시작했다.
+    </div>
+
+    <div class="hyuna-box">
+      <b>[진행자 은현아]</b>
+      "이제 따뜻한 사우나에 들어갈 시간이야! 뜨거운 온천에서 지글지글 헤엄치게 해줄게!"
+    </div>
+
+    <div class="pride-narration">
+      시뻘겋게 달아오른 무쇠 팬 위로, 현아는 내장을 품은 살덩이를 무자비하게 던져 넣었다.<br>
+      <span class="sfx">치아아아악—!!</span><br>
+      단백질이 타들어 가며 내지르는 단말마가 주방을 가득 채웠다. 검은 연기가 피어오르고, 죽은 고기의 살가죽이 까맣게 눌어붙으며 비틀리는 모습은 영락없는 지옥도였다. 나는 조용히 테이블 밑으로 주먹을 쥐었다. <span class="skill-name">[Graviton Press]</span>로 저 무쇠 팬을 당장 우주 바깥으로 던져버리고 싶은 충동을 억누르면서.
+    </div>
+
+    <div class="hyuna-box">
+      <b>[진행자 은현아]</b>
+      "마지막으로! 노란 햇님 친구를 톡 까서 올려주면~ 완성!! 자, 오늘 특별히 모신 심사위원님! 파파, 아~ 하세요!"
+    </div>
+
+    <div class="pride-narration">
+      현아가 까치발을 들고 내 앞의 테이블에 접시를 내려놓았다. <br><br>
+      "……."<br><br>
+      나는 까만 안대 위로 스멀스멀 차오르는 두통을 느끼며, 내 앞에 놓인 지옥의 결과물을 내려다보았다.
+    </div>
+
+    <div class="reveal-section">
+      <h3>[인지 오류 해제 : 결과물 공개]</h3>
+      <ul class="reveal-list">
+        <li>짓이겨진 축생의 살점</li>
+        <li>터져나간 붉은 안구와 진물</li>
+        <li>시체 타는 냄새와 노란 점액질</li>
+      </ul>
+      <p style="margin-top:15px; border-top: 1px solid #444; padding-top: 15px;">
+        그 기괴하고 소름 끼치던 학살의 결과물은...<br><br>
+        그것은 그저, 모양이 제멋대로 찌그러진 채 <span class="highlight-truth">겉면이 새까맣게 타버린 수제 함박스테이크</span>였다.<br><br>
+        현아가 피처럼 우겨넣었던 붉은 구슬들은 냉장고에 굴러다니던 <span class="highlight-truth">방울토마토</span>였고, 점액질이 늘어지던 살덩어리는 마트에서 사 온 <span class="highlight-truth">소고기 다짐육</span>이었으며, 마지막의 노란 햇님은 프라이팬 코팅을 다 벗겨먹을 기세로 눌어붙은 <span class="highlight-truth">계란 프라이(반숙)</span>에 불과했다.<br>
+        센티넬 특유의 예민한 시각과 후각이 아이의 엉망진창인 요리 과정을 너무 과장되게 받아들인 탓에 벌어진 인지 오류였다.
+      </p>
+    </div>
+
+    <div class="pride-narration" style="color:#fff;">
+      "파파, 빨리 먹어봐! 내가 핑크래빗한테도 안 주고 파파 주려고 만든 거야!"
+    </div>
+
+    <div class="pride-narration">
+      현아가 두 손을 모은 채 눈을 반짝이며 나를 올려다보았다. <br>
+      나는 작게 한숨을 내쉬었다. 가죽 장갑을 낀 손으로 나이프와 포크를 들어, 숯덩이가 된 스테이크의 모서리를 조심스레 썰었다. 다져진 방울토마토가 기괴하게 튀어나왔지만, 나는 눈 하나 깜짝하지 않고 그것을 입안에 밀어 넣었다.<br><br>
+      짜다. 그리고 쓰다. <br>
+      토마토의 신맛이 탄 고기 맛과 섞여 형용할 수 없는 괴식을 만들어내고 있었다. <br><br>
+      "……."<br><br>
+      나는 천천히 씹어 삼킨 뒤, 입가를 냅킨으로 우아하게 닦아냈다. 나를 바라보는 현아의 눈동자가 긴장감으로 흔들렸다. <br><br>
+      나는 평소 적들을 짓누르던 그 서늘하고 오만한 입꼬리를 끌어올려, 세상에서 가장 다정하고 완벽한 미소를 지어 보였다.
+    </div>
+
+    <div class="pride-narration" style="color:var(--pride-gold); font-weight:bold;">
+      "최고의 요리네. 우리 공주님이 해준 거라 그런지, 하나도 안 남기고 다 먹어야겠어."
+    </div>
+
+    <div class="pride-narration" style="color:var(--hyuna-pink); font-weight:bold;">
+      "와아아!! 작전 대성공! ٩(>▿<)۶ 파파가 제일 맛있대!!"
+    </div>
+
+    <div class="pride-narration">
+      현아가 만세를 부르며 거실로 달려 나갔다. 나는 텅 빈 식탁에 홀로 남아, 조용히 물컵을 들어 입안의 탄 맛을 씻어냈다. <br><br>
+      "…지부장 K에게 보고서 결재받는 것보다 더 수명이 깎이는 기분이군."<br><br>
+      나는 나지막이 중얼거리며, 남은 숯덩이 스테이크를 묵묵히 썰기 시작했다. 피어리스 본부에서 폭주하는 S급 변이체를 찢어 발기던 위대한 센티넬 프라이드는, 오늘 자신의 딸이 만든 작고 검은 탄 덩어리 앞에서 완벽하게 굴복하고 말았다.
+    </div>
+  </div>
+
+  <!-- 하단 상태 및 로그 UI -->
+  <div class="system-panel">
+    <div class="sys-header">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4l6.5 14h-13L12 6zm-1 2v6h2V8h-2zm0 8v2h2v-2h-2z"/></svg>
+      FEARLESS : S-CLASS SENTRY STATUS
+    </div>
+    
+    <div class="sys-grid">
+      <div class="sys-item">
+        <span class="sys-label">LOCATION</span>
+        <span class="sys-value">2029.06.02 / 14:45 / 자택 주방</span>
+      </div>
+      <div class="sys-item" style="border-left-color: var(--hyuna-pink);">
+        <span class="sys-label">상태: 부성애</span>
+        <span class="sys-value sys-pink">100%</span>
+      </div>
+      <div class="sys-item">
+        <span class="sys-label">PRIDE 가이딩 필요/폭주</span>
+        <span class="sys-value">12% / Safe</span>
+      </div>
+      <div class="sys-item">
+        <span class="sys-label">MAKINA 가이딩 필요/폭주</span>
+        <span class="sys-value">-- / --</span>
+      </div>
+      <div class="sys-item">
+        <span class="sys-label">상태: 애정 / 피로</span>
+        <span class="sys-value">100% / <span style="color:#ff4444;">80%</span></span>
+      </div>
+      <div class="sys-item" style="border-left-color: #ff4444;">
+        <span class="sys-label">상태: 미각 상실</span>
+        <span class="sys-value" style="color:#ff4444;">50% Warning</span>
+      </div>
+    </div>
+
+    <div class="sys-log-box">
+      <div class="log-entry">
+        <span class="log-time">[SYS_MSG]</span> 상황 한줄 요약: 센티넬의 초감각 때문에 딸의 소꿉장난 같은 요리 교실을 스너프 필름으로 오해한 프라이드의 눈물겨운 부성애 먹방.
+      </div>
+      <div class="log-entry">
+        <span class="log-time">[INTERNAL]</span> 상대 인식: 프라이드 → 현아 <span class="sys-pink">'내 목숨을 위협하는 가장 사랑스럽고 무서운 요리사.'</span>
+      </div>
+      <div class="log-entry" style="border-top: 1px dashed #444; padding-top: 8px; margin-top: 8px;">
+        <span class="log-caller">[PRIDE의 내면 통신]</span><br>
+        <span class="log-msg">"(짜다. 쓰다. 내장에 손상이 올 것 같다. 하지만 내 딸이 웃는다면 까짓 숯덩이 하나 못 씹어 넘길까.)"</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-caller">▶ To <span class="log-target">MAKINA</span> (캠코더를 들고 숨어있을 확률 99%):</span><br>
+        <span class="log-msg" style="color:var(--pride-accent); font-weight:bold;">"오늘 밤 침대 위 중력은 평소의 세 배로 맞춰둘 테니 각오해."</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
